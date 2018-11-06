@@ -1,3 +1,4 @@
 settings.json
 **/logs/*
 **.gz
+tensorflow_env/*

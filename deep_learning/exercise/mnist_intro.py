@@ -31,7 +31,8 @@ b3 = tf.Variable(tf.random_normal([10]))
 
 #hypothesis = (tf.matmul(L2, W3) + b3)
 #cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=hypothesis, labels=Y))
-hypothesis = tf.nn.softmax(tf.matmul(L2, W3) + b3)
+last_layer =tf.matmul(L2, W3) + b3 
+hypothesis = tf.nn.softmax(last_layer)
 cost = tf.reduce_mean(-tf.reduce_sum(Y * tf.log(hypothesis+1e-22), axis=1))
 
 #logging for tensorboard
@@ -63,14 +64,14 @@ with tf.Session() as sess:
 
         for i in range(total_batch):
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-            c, _ , _s = sess.run([cost, optimizer,summary], feed_dict={
+            c, _ , _s,h = sess.run([cost, optimizer,summary,last_layer], feed_dict={
                             X: batch_xs, Y: batch_ys})
             avg_cost += c / total_batch
             writer.add_summary(_s,global_step=global_steps)
             global_steps = global_steps+1
 
         print('Epoch:', '%04d' % (epoch + 1),
-              'cost =', '{:.9f}'.format(avg_cost))
+              'cost =', '{:.9f}'.format(avg_cost) , 'hypo =',h)
 
     print("Learning finished")
 
